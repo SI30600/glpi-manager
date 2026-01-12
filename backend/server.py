@@ -451,6 +451,8 @@ async def health_check():
 @glpi_router.get("/test-connection")
 async def test_glpi_connection():
     """Test GLPI API connection"""
+    if glpi_service.demo_mode:
+        return {"status": "demo", "message": "Mode démonstration actif - données simulées"}
     try:
         token = await glpi_service.authenticate()
         return {"status": "success", "message": "Connexion GLPI réussie", "has_token": bool(token)}
