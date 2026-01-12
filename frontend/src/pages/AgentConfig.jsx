@@ -57,12 +57,25 @@ export default function AgentConfig() {
     }
   };
 
-  const handleCopyConfig = () => {
+  const handleCopyConfig = async () => {
     if (configGenerated?.config) {
-      navigator.clipboard.writeText(configGenerated.config);
-      setCopied(true);
-      toast.success("Configuration copiée");
-      setTimeout(() => setCopied(false), 2000);
+      try {
+        await navigator.clipboard.writeText(configGenerated.config);
+        setCopied(true);
+        toast.success("Configuration copiée");
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        // Fallback for clipboard permission issues
+        const textArea = document.createElement('textarea');
+        textArea.value = configGenerated.config;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setCopied(true);
+        toast.success("Configuration copiée");
+        setTimeout(() => setCopied(false), 2000);
+      }
     }
   };
 
