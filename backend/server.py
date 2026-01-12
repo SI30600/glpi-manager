@@ -169,7 +169,7 @@ class GLPIService:
         self.base_url = f"{GLPI_URL}/apirest.php"
         self.session_token: Optional[str] = None
         self.timeout = 60
-        self.demo_mode = True  # Mode démonstration activé
+        self.demo_mode = False  # Mode production - connexion GLPI réelle
         
     async def authenticate(self) -> str:
         """Authenticate with GLPI API using user_token"""
