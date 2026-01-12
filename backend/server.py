@@ -25,6 +25,7 @@ db = client[os.environ['DB_NAME']]
 GLPI_URL = os.environ.get('GLPI_URL', '')
 GLPI_USERNAME = os.environ.get('GLPI_USERNAME', '')
 GLPI_PASSWORD = os.environ.get('GLPI_PASSWORD', '')
+GLPI_USER_TOKEN = os.environ.get('GLPI_USER_TOKEN', '')
 GLPI_APP_TOKEN = os.environ.get('GLPI_APP_TOKEN', '')
 
 # Create the main app
@@ -129,8 +130,10 @@ class GLPIService:
         """Authenticate with GLPI API using user_token"""
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"user_token {GLPI_APP_TOKEN}",
+            "Authorization": f"user_token {GLPI_USER_TOKEN}",
         }
+        if GLPI_APP_TOKEN:
+            headers["App-Token"] = GLPI_APP_TOKEN
             
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
             try:
