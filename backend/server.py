@@ -120,14 +120,63 @@ class AgentConfig(BaseModel):
     
 # ============ GLPI SERVICE ============
 
+# Demo data when GLPI is not connected
+DEMO_COMPUTERS = [
+    {"id": 1, "name": "PC-BUREAU-001", "serial": "SN-2024-001", "computermodels_id": "Dell OptiPlex 7090", "manufacturers_id": "Dell", "states_id": "En service", "date_mod": "2024-12-15", "locations_id": "Bureau Paris", "users_id": "Jean Dupont"},
+    {"id": 2, "name": "PC-BUREAU-002", "serial": "SN-2024-002", "computermodels_id": "HP ProDesk 400", "manufacturers_id": "HP", "states_id": "En service", "date_mod": "2024-12-14", "locations_id": "Bureau Lyon", "users_id": "Marie Martin"},
+    {"id": 3, "name": "LAPTOP-TECH-001", "serial": "SN-2024-003", "computermodels_id": "Lenovo ThinkPad T14", "manufacturers_id": "Lenovo", "states_id": "En service", "date_mod": "2024-12-13", "locations_id": "Mobile", "users_id": "Pierre Bernard"},
+    {"id": 4, "name": "PC-COMPTA-001", "serial": "SN-2024-004", "computermodels_id": "Dell Latitude 5520", "manufacturers_id": "Dell", "states_id": "En maintenance", "date_mod": "2024-12-12", "locations_id": "Comptabilité", "users_id": "Sophie Leroy"},
+    {"id": 5, "name": "SERVER-MAIN", "serial": "SN-2024-005", "computermodels_id": "Dell PowerEdge R740", "manufacturers_id": "Dell", "states_id": "En service", "date_mod": "2024-12-11", "locations_id": "Salle serveur", "users_id": "Admin"},
+    {"id": 6, "name": "PC-ACCUEIL-001", "serial": "SN-2024-006", "computermodels_id": "HP EliteDesk 800", "manufacturers_id": "HP", "states_id": "En service", "date_mod": "2024-12-10", "locations_id": "Accueil", "users_id": "Claire Dubois"},
+    {"id": 7, "name": "LAPTOP-DIR-001", "serial": "SN-2024-007", "computermodels_id": "Apple MacBook Pro 14", "manufacturers_id": "Apple", "states_id": "En service", "date_mod": "2024-12-09", "locations_id": "Direction", "users_id": "Marc Directeur"},
+    {"id": 8, "name": "PC-STOCK-001", "serial": "SN-2024-008", "computermodels_id": "Lenovo ThinkCentre M720", "manufacturers_id": "Lenovo", "states_id": "Stock", "date_mod": "2024-12-08", "locations_id": "Stock", "users_id": None},
+]
+
+DEMO_SOFTWARE = [
+    {"id": 1, "name": "Microsoft Office 365", "softwarecategories_id": "Bureautique", "manufacturers_id": "Microsoft", "date_mod": "2024-12-15"},
+    {"id": 2, "name": "Adobe Acrobat Pro", "softwarecategories_id": "PDF", "manufacturers_id": "Adobe", "date_mod": "2024-12-14"},
+    {"id": 3, "name": "Google Chrome", "softwarecategories_id": "Navigateur", "manufacturers_id": "Google", "date_mod": "2024-12-13"},
+    {"id": 4, "name": "Mozilla Firefox", "softwarecategories_id": "Navigateur", "manufacturers_id": "Mozilla", "date_mod": "2024-12-12"},
+    {"id": 5, "name": "7-Zip", "softwarecategories_id": "Utilitaire", "manufacturers_id": "Igor Pavlov", "date_mod": "2024-12-11"},
+    {"id": 6, "name": "VLC Media Player", "softwarecategories_id": "Multimédia", "manufacturers_id": "VideoLAN", "date_mod": "2024-12-10"},
+    {"id": 7, "name": "Sage Compta", "softwarecategories_id": "Comptabilité", "manufacturers_id": "Sage", "date_mod": "2024-12-09"},
+    {"id": 8, "name": "TeamViewer", "softwarecategories_id": "Support", "manufacturers_id": "TeamViewer", "date_mod": "2024-12-08"},
+    {"id": 9, "name": "Kaspersky Endpoint Security", "softwarecategories_id": "Sécurité", "manufacturers_id": "Kaspersky", "date_mod": "2024-12-07"},
+    {"id": 10, "name": "GLPI Agent", "softwarecategories_id": "Inventaire", "manufacturers_id": "GLPI Project", "date_mod": "2024-12-06"},
+]
+
+DEMO_MONITORS = [
+    {"id": 1, "name": "Dell U2722D", "serial": "MON-001", "monitormodels_id": "U2722D 27\"", "manufacturers_id": "Dell"},
+    {"id": 2, "name": "HP E24 G4", "serial": "MON-002", "monitormodels_id": "E24 G4 24\"", "manufacturers_id": "HP"},
+    {"id": 3, "name": "LG 27UK850", "serial": "MON-003", "monitormodels_id": "27UK850 4K", "manufacturers_id": "LG"},
+    {"id": 4, "name": "Samsung S24R650", "serial": "MON-004", "monitormodels_id": "S24R650 24\"", "manufacturers_id": "Samsung"},
+]
+
+DEMO_PRINTERS = [
+    {"id": 1, "name": "HP LaserJet Pro M404", "serial": "PRT-001", "printermodels_id": "LaserJet Pro M404dn", "locations_id": "Bureau Paris"},
+    {"id": 2, "name": "Brother MFC-L8900CDW", "serial": "PRT-002", "printermodels_id": "MFC-L8900CDW", "locations_id": "Bureau Lyon"},
+    {"id": 3, "name": "Canon PIXMA G6050", "serial": "PRT-003", "printermodels_id": "PIXMA G6050", "locations_id": "Accueil"},
+]
+
+DEMO_NETWORK = [
+    {"id": 1, "name": "Switch-Principal", "serial": "NET-001", "networkequipmenttypes_id": "Switch 48 ports", "locations_id": "Salle serveur"},
+    {"id": 2, "name": "Routeur-Fibre", "serial": "NET-002", "networkequipmenttypes_id": "Routeur", "locations_id": "Salle serveur"},
+    {"id": 3, "name": "AP-Wifi-Bureau", "serial": "NET-003", "networkequipmenttypes_id": "Point d'accès Wifi", "locations_id": "Bureau Paris"},
+]
+
 class GLPIService:
     def __init__(self):
         self.base_url = f"{GLPI_URL}/apirest.php"
         self.session_token: Optional[str] = None
         self.timeout = 60
+        self.demo_mode = True  # Mode démonstration activé
         
     async def authenticate(self) -> str:
         """Authenticate with GLPI API using user_token"""
+        if self.demo_mode:
+            logger.info("Mode démonstration activé - pas de connexion GLPI")
+            return "demo_token"
+            
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"user_token {GLPI_USER_TOKEN}",
@@ -157,6 +206,8 @@ class GLPIService:
                 raise Exception(f"Failed to authenticate with GLPI: {str(e)}")
     
     async def _ensure_authenticated(self) -> str:
+        if self.demo_mode:
+            return "demo_token"
         if not self.session_token:
             await self.authenticate()
         return self.session_token
@@ -170,6 +221,9 @@ class GLPIService:
     
     async def get_computers(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
         """Get computer inventory"""
+        if self.demo_mode:
+            return DEMO_COMPUTERS[range_start:range_end]
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -200,6 +254,12 @@ class GLPIService:
     
     async def get_computer_details(self, computer_id: int) -> Optional[Dict[str, Any]]:
         """Get detailed info for a specific computer"""
+        if self.demo_mode:
+            for comp in DEMO_COMPUTERS:
+                if comp["id"] == computer_id:
+                    return {**comp, "comment": "Poste de travail standard", "uuid": f"uuid-{computer_id}", "date_creation": "2024-01-15", "contact": "support@solutioninformatique.fr"}
+            return None
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -220,6 +280,9 @@ class GLPIService:
     
     async def get_software(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
         """Get software inventory"""
+        if self.demo_mode:
+            return DEMO_SOFTWARE[range_start:range_end]
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -249,6 +312,9 @@ class GLPIService:
     
     async def get_monitors(self) -> List[Dict[str, Any]]:
         """Get monitors inventory"""
+        if self.demo_mode:
+            return DEMO_MONITORS
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -264,6 +330,9 @@ class GLPIService:
     
     async def get_printers(self) -> List[Dict[str, Any]]:
         """Get printers inventory"""
+        if self.demo_mode:
+            return DEMO_PRINTERS
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -279,6 +348,9 @@ class GLPIService:
     
     async def get_network_equipments(self) -> List[Dict[str, Any]]:
         """Get network equipment inventory"""
+        if self.demo_mode:
+            return DEMO_NETWORK
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -294,6 +366,9 @@ class GLPIService:
     
     async def get_phones(self) -> List[Dict[str, Any]]:
         """Get phones inventory"""
+        if self.demo_mode:
+            return []
+            
         await self._ensure_authenticated()
         
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
@@ -346,7 +421,7 @@ class GLPIService:
     
     async def close_session(self):
         """Close GLPI session"""
-        if not self.session_token:
+        if self.demo_mode or not self.session_token:
             return
             
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
