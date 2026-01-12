@@ -126,17 +126,11 @@ class GLPIService:
         self.timeout = 60
         
     async def authenticate(self) -> str:
-        """Authenticate with GLPI API"""
-        credentials = f"{GLPI_USERNAME}:{GLPI_PASSWORD}"
-        encoded_credentials = base64.b64encode(credentials.encode()).decode()
-        
+        """Authenticate with GLPI API using user_token"""
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Basic {encoded_credentials}",
+            "Authorization": f"user_token {GLPI_APP_TOKEN}",
         }
-        
-        if GLPI_APP_TOKEN:
-            headers["App-Token"] = GLPI_APP_TOKEN
             
         async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
             try:
@@ -169,8 +163,6 @@ class GLPIService:
             "Content-Type": "application/json",
             "Session-Token": self.session_token or "",
         }
-        if GLPI_APP_TOKEN:
-            headers["App-Token"] = GLPI_APP_TOKEN
         return headers
     
     async def get_computers(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
