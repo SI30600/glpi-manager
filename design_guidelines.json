@@ -1,0 +1,125 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Solution Informatique GLPI Manager",
+      "archetype": "Electric & Neon (Industrial Variant)",
+      "vibe": "Professional, Technical, High-Performance, Secure",
+      "theme_strategy": "dark_mode_only"
+    },
+    "typography": {
+      "fonts": {
+        "headings": {
+          "family": "JetBrains Mono",
+          "weights": ["700", "800"],
+          "usage": "Page titles, Card headers, KPIs, Data Labels"
+        },
+        "body": {
+          "family": "IBM Plex Sans",
+          "weights": ["400", "500", "600"],
+          "usage": "General text, descriptions, form labels"
+        },
+        "mono": {
+          "family": "JetBrains Mono",
+          "weights": ["400", "500"],
+          "usage": "IP Addresses, MAC Addresses, Serial Numbers, Code Snippets"
+        }
+      },
+      "scale": {
+        "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+        "h2": "text-3xl font-bold tracking-tight",
+        "h3": "text-xl font-semibold tracking-tight",
+        "body": "text-sm leading-relaxed",
+        "small": "text-xs font-medium tracking-wide uppercase text-muted-foreground"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": "#09090B",
+        "surface": "#18181B",
+        "surface_highlight": "#27272A",
+        "border": "#27272A",
+        "primary": "#F59E0B",
+        "primary_foreground": "#000000",
+        "secondary": "#EA580C",
+        "accent": "#FBBF24",
+        "text_primary": "#FAFAFA",
+        "text_secondary": "#A1A1AA",
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444",
+        "info": "#3B82F6"
+      },
+      "gradients": {
+        "primary": "bg-gradient-to-r from-amber-500 to-orange-600",
+        "surface_hover": "bg-gradient-to-b from-white/5 to-transparent",
+        "glow": "shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+      }
+    },
+    "layout": {
+      "grid_system": "Control Room Grid",
+      "spacing": {
+        "container_padding": "p-6 md:p-8",
+        "gap": "gap-4 md:gap-6",
+        "internal_padding": "p-4"
+      },
+      "border_radius": {
+        "default": "rounded-md",
+        "card": "rounded-lg",
+        "button": "rounded-md"
+      }
+    },
+    "components": {
+      "cards": {
+        "style": "bg-zinc-900/50 border border-zinc-800 backdrop-blur-sm hover:border-amber-500/50 transition-colors duration-300",
+        "header": "border-b border-zinc-800/50 pb-3 mb-3"
+      },
+      "buttons": {
+        "primary": "bg-amber-500 hover:bg-amber-600 text-black font-bold shadow-[0_0_10px_rgba(245,158,11,0.2)]",
+        "secondary": "bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700",
+        "ghost": "hover:bg-amber-500/10 hover:text-amber-500"
+      },
+      "inputs": {
+        "style": "bg-zinc-950 border-zinc-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 placeholder:text-zinc-600"
+      },
+      "status_badges": {
+        "online": "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20",
+        "offline": "bg-red-500/10 text-red-500 border border-red-500/20",
+        "warning": "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+      }
+    },
+    "visual_enhancers": {
+      "glassmorphism": "backdrop-blur-md bg-black/40 border-b border-white/5",
+      "scanlines": "bg-[linear-gradient(rgba(18,16,11,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))]",
+      "tracing_beam": "Use framer-motion to animate a border glow on active cards"
+    },
+    "assets": {
+      "logo": {
+        "url": "https://solutioninformatique.fr/sitepad-data/uploads/2024/03/logo-solution-informatique-plein-ecran.png",
+        "alt": "Solution Informatique Logo"
+      },
+      "images": {
+        "login_bg": "https://images.unsplash.com/photo-1675642728964-4937be75857b?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "dashboard_texture": "https://images.unsplash.com/photo-1675602488512-bdd631490fcb?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "server_rack": "https://images.unsplash.com/photo-1744868562210-fffb7fa882d9?crop=entropy&cs=srgb&fm=jpg&q=85"
+      },
+      "icons": "Lucide React (default)"
+    }
+  },
+  "implementation_steps": [
+    "1. Install dependencies: `yarn add lucide-react recharts framer-motion clsx tailwind-merge`",
+    "2. Configure `tailwind.config.js` to extend colors with the 'Obsidian & Amber' palette.",
+    "3. Update `index.css` to set the dark theme variables as default (override :root).",
+    "4. Create a `Layout` component with the Sidebar/Header structure using the 'Control Room' grid.",
+    "5. Build the `Dashboard` page with Recharts (customized to use Amber/Orange strokes).",
+    "6. Implement the `Inventory` list using Shadcn Table with custom status badges.",
+    "7. Build the `Agent Config` form using Shadcn Form + Zod."
+  ],
+  "universal_guidelines": [
+    "ALWAYS use 'dark' mode classes by default. The app is dark-only.",
+    "Use `data-testid` on all interactive elements.",
+    "Do not use gradients for text, only for borders or subtle backgrounds.",
+    "Ensure all charts use the Amber/Orange/Emerald/Red palette (no random blues/purples).",
+    "Use `JetBrains Mono` for any data that needs to be scanned (IPs, Dates, IDs).",
+    "Add a subtle 1px border to all containers to define hierarchy in the dark theme."
+  ]
+}
