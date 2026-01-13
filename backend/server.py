@@ -375,7 +375,6 @@ async def get_dashboard_stats(username: str = Depends(verify_credentials)):
 async def get_computers(offset..., limit..., username: str = Depends(verify_credentials)):
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=500)
-):
     try:
         computers = await glpi_service.get_computers(offset, offset + limit)
         return {"data": computers, "total": len(computers)}
