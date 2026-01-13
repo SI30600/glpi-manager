@@ -363,7 +363,7 @@ async def test_glpi_connection():
         raise HTTPException(status_code=500, detail=f"Échec connexion GLPI: {str(e)}")
 
 @glpi_router.get("/stats", response_model=DashboardStats)
-async def get_dashboard_stats(username: str = Depends(verify_credentials)):
+async def get_dashboard_stats():
     try:
         stats = await glpi_service.get_dashboard_stats()
         return stats
