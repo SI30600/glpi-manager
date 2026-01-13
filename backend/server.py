@@ -220,32 +220,37 @@ class GLPIService:
         return headers
     
  async def get_computers(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
-    """Get computer inventory"""
-    if self.demo_mode:
-        return DEMO_COMPUTERS[range_start:range_end]
+        """Get computer inventory"""
+        if self.demo_mode:
+            return DEMO_COMPUTERS[range_start:range_end]
+            
+        await self._ensure_authenticated()
         
-    await self._ensure_authenticated()
-    
-    async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
-        try:
-            response = await client.get(
-                f"{self.base_url}/Computer",
-                headers={
+        async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
+            try:
+                headers = {
                     "Content-Type": "application/json",
                     "Session-Token": self.session_token,
                     "App-Token": GLPI_APP_TOKEN
                 }
-            )
+                
+                response = await client.get(
+                    f"{self.base_url}/Computer",
+                    headers=headers,
+                    params={"range": f"{range_start}-{range_end}"}
+                )
+                
+                logger.info(f"GLPI Computers response: {response.status_code} - {response.text[:500]}")
                 
                 if response.status_code == 200:
                     data = response.json()
-                    return data if isinstance(data, list) else []
-                elif response.status_code == 401:
-                    self.session_token = None
-                    await self._ensure_authenticated()
-                    return await self.get_computers(range_start, range_end)
+                    if isinstance(data, list):
+                        return data
+                    elif isinstance(data, dict) and "data" in data:
+                        return data["data"]
+                    return []
                 else:
-                    logger.warning(f"Get computers failed: {response.status_code}")
+                    logger.warning(f"Get computers failed: {response.status_code} - {response.text[:200]}")
                     return []
                     
             except Exception as e:
