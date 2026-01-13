@@ -27,7 +27,9 @@ GLPI_USERNAME = os.environ.get('GLPI_USERNAME', '')
 GLPI_PASSWORD = os.environ.get('GLPI_PASSWORD', '')
 GLPI_USER_TOKEN = os.environ.get('GLPI_USER_TOKEN', '')
 GLPI_APP_TOKEN = os.environ.get('GLPI_APP_TOKEN', '')
-
+# Authentication
+APP_USERNAME = os.environ.get('APP_USERNAME', 'si30600')
+APP_PASSWORD = os.environ.get('APP_PASSWORD', 'JPNu9%jPz3ZAbfPRCCbL')
 # Create the main app
 app = FastAPI(title="GLPI Manager - Solution Informatique")
 
@@ -325,7 +327,23 @@ class GLPIService:
 
 # Global GLPI service instance
 glpi_service = GLPIService()
+# ============ AUTH ============
+from fastapi import Depends, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import secrets
 
+security = HTTPBasic()
+
+def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = secrets.compare_digest(credentials.username, APP_USERNAME)
+    correct_password = secrets.compare_digest(credentials.password, APP_PASSWORD)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Identifiants incorrects",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 # ============ ROUTES ============
 
 @api_router.get("/")
@@ -345,7 +363,7 @@ async def test_glpi_connection():
         raise HTTPException(status_code=500, detail=f"Échec connexion GLPI: {str(e)}")
 
 @glpi_router.get("/stats", response_model=DashboardStats)
-async def get_dashboard_stats():
+async def get_dashboard_stats(username: str = Depends(verify_credentials)):
     try:
         stats = await glpi_service.get_dashboard_stats()
         return stats
