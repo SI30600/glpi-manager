@@ -449,6 +449,29 @@ async def health_check():
 
 # GLPI Routes
 @glpi_router.get("/test-connection")
+@glpi_router.get("/debug-computers")
+async def debug_computers():
+    """Debug: voir la réponse brute de GLPI"""
+    try:
+        await glpi_service._ensure_authenticated()
+        
+        async with httpx.AsyncClient(timeout=60, verify=False) as client:
+            response = await client.get(
+                f"{glpi_service.base_url}/Computer",
+                headers={
+                    "Content-Type": "application/json",
+                    "Session-Token": glpi_service.session_token,
+                    "App-Token": GLPI_APP_TOKEN
+                }
+            )
+            
+            return {
+                "status_code": response.status_code,
+                "response": response.text[:2000],
+                "session_token": glpi_service.session_token[:10] + "..."
+            }
+    except Exception as e:
+        return {"error": str(e)}
 async def test_glpi_connection():
     """Test GLPI API connection"""
     if glpi_service.demo_mode:
