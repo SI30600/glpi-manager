@@ -566,6 +566,47 @@ force = {'yes' if config.force else 'no'}
     }
 
 @glpi_router.get("/agent-download")
+@glpi_router.get("/agent-install-script")
+async def get_agent_install_script():
+    """Generate Windows batch installer script"""
+    script_content = '''@echo off
+echo ============================================
+echo   Installation Agent GLPI - Solution Informatique
+echo ============================================
+echo.
+
+REM Verification des droits administrateur
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo ERREUR: Veuillez executer en tant qu'administrateur
+    pause
+    exit /b 1
+)
+
+echo Telechargement de l'Agent GLPI 1.15...
+curl -L -o "%TEMP%\\GLPI-Agent-1.15-x64.msi" "https://github.com/glpi-project/glpi-agent/releases/download/1.15/GLPI-Agent-1.15-x64.msi"
+
+if not exist "%TEMP%\\GLPI-Agent-1.15-x64.msi" (
+    echo ERREUR: Echec du telechargement
+    pause
+    exit /b 1
+)
+
+echo.
+echo Installation en cours...
+msiexec /i "%TEMP%\\GLPI-Agent-1.15-x64.msi" /quiet /norestart SERVER="https://solutioninformatique.with32.glpi-network.cloud" TAG="solution-informatique" RUNNOW=1
+
+echo.
+echo ============================================
+echo   Installation terminee avec succes !
+echo   L'inventaire a ete envoye a GLPI Cloud.
+echo ============================================
+pause
+'''
+    return {
+        "script": script_content,
+        "filename": "install-glpi-agent.bat"
+    }
 async def get_agent_download_link():
     """Get GLPI Agent download link"""
     return {
