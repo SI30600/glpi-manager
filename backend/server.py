@@ -626,37 +626,6 @@ async def get_agent_download_link():
             "4. L'agent effectuera un inventaire automatique"
         ]
     }
-@glpi_router.get("/debug")
-async def debug_glpi():
-    """Debug GLPI API"""
-    import httpx
-    results = {}
-    
-    # Test auth
-    try:
-        await glpi_service._ensure_authenticated()
-        results["session_token"] = glpi_service.session_token[:20] + "..." if glpi_service.session_token else "None"
-    except Exception as e:
-        results["auth_error"] = str(e)
-        return results
-    
-    # Test raw request
-    try:
-        async with httpx.AsyncClient(timeout=60, verify=False) as client:
-            response = await client.get(
-                f"{GLPI_URL}/apirest.php/Computer",
-                headers={
-                    "Content-Type": "application/json",
-                    "Session-Token": glpi_service.session_token,
-                    "App-Token": GLPI_APP_TOKEN
-                }
-            )
-            results["status_code"] = response.status_code
-            results["response_preview"] = response.text[:1000]
-    except Exception as e:
-        results["request_error"] = str(e)
-    
-    return results
 # Include routers
 api_router.include_router(glpi_router)
 app.include_router(api_router)
