@@ -219,23 +219,23 @@ class GLPIService:
         }
         return headers
     
-    async def get_computers(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
-        """Get computer inventory"""
-        if self.demo_mode:
-            return DEMO_COMPUTERS[range_start:range_end]
-            
-        await self._ensure_authenticated()
+ async def get_computers(self, range_start: int = 0, range_end: int = 50) -> List[Dict[str, Any]]:
+    """Get computer inventory"""
+    if self.demo_mode:
+        return DEMO_COMPUTERS[range_start:range_end]
         
-        async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
-            try:
-                response = await client.get(
-                    f"{self.base_url}/Computer",
-                    headers=self._get_headers(),
-                    params={
-                        "expand_dropdowns": 1,
-                        "range": f"{range_start}-{range_end}"
-                    }
-                )
+    await self._ensure_authenticated()
+    
+    async with httpx.AsyncClient(timeout=self.timeout, verify=False) as client:
+        try:
+            response = await client.get(
+                f"{self.base_url}/Computer",
+                headers={
+                    "Content-Type": "application/json",
+                    "Session-Token": self.session_token,
+                    "App-Token": GLPI_APP_TOKEN
+                }
+            )
                 
                 if response.status_code == 200:
                     data = response.json()
