@@ -27,9 +27,7 @@ GLPI_USERNAME = os.environ.get('GLPI_USERNAME', '')
 GLPI_PASSWORD = os.environ.get('GLPI_PASSWORD', '')
 GLPI_USER_TOKEN = os.environ.get('GLPI_USER_TOKEN', '')
 GLPI_APP_TOKEN = os.environ.get('GLPI_APP_TOKEN', '')
-# Authentication
-APP_USERNAME = os.environ.get('APP_USERNAME', 'si30600')
-APP_PASSWORD = os.environ.get('APP_PASSWORD', 'JPNu9%jPz3ZAbfPRCCbL')
+
 # Create the main app
 app = FastAPI(title="GLPI Manager - Solution Informatique")
 
@@ -327,23 +325,7 @@ class GLPIService:
 
 # Global GLPI service instance
 glpi_service = GLPIService()
-# ============ AUTH ============
-from fastapi import Depends, status
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-import secrets
 
-security = HTTPBasic()
-
-def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, APP_USERNAME)
-    correct_password = secrets.compare_digest(credentials.password, APP_PASSWORD)
-    if not (correct_username and correct_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Identifiants incorrects",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.username
 # ============ ROUTES ============
 
 @api_router.get("/")
@@ -363,7 +345,7 @@ async def test_glpi_connection():
         raise HTTPException(status_code=500, detail=f"Échec connexion GLPI: {str(e)}")
 
 @glpi_router.get("/stats", response_model=DashboardStats)
-async def get_dashboard_stats(username: str = Depends(verify_credentials)):
+async def get_dashboard_stats():
     try:
         stats = await glpi_service.get_dashboard_stats()
         return stats
@@ -372,9 +354,10 @@ async def get_dashboard_stats(username: str = Depends(verify_credentials)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/computers")
-async def get_computers(offset..., limit..., username: str = Depends(verify_credentials)):
+async def get_computers(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=500)
+):
     try:
         computers = await glpi_service.get_computers(offset, offset + limit)
         return {"data": computers, "total": len(computers)}
@@ -382,7 +365,7 @@ async def get_computers(offset..., limit..., username: str = Depends(verify_cred
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/computers/{computer_id}")
-async def get_computer_details(computer_id: int, username: str = Depends(verify_credentials)):
+async def get_computer_details(computer_id: int):
     try:
         computer = await glpi_service.get_computer_details(computer_id)
         if not computer:
@@ -394,7 +377,7 @@ async def get_computer_details(computer_id: int, username: str = Depends(verify_
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/software")
-async def get_software(offset..., limit..., username: str = Depends(verify_credentials)):
+async def get_software(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=500)
 ):
@@ -405,7 +388,7 @@ async def get_software(offset..., limit..., username: str = Depends(verify_crede
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/monitors")
-async def get_monitors(username: str = Depends(verify_credentials)):
+async def get_monitors():
     try:
         monitors = await glpi_service.get_monitors()
         return {"data": monitors, "total": len(monitors)}
@@ -413,7 +396,7 @@ async def get_monitors(username: str = Depends(verify_credentials)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/printers")
-async def get_printers(username: str = Depends(verify_credentials)):
+async def get_printers():
     try:
         printers = await glpi_service.get_printers()
         return {"data": printers, "total": len(printers)}
@@ -421,7 +404,7 @@ async def get_printers(username: str = Depends(verify_credentials)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/network")
-async def get_network_equipment(username: str = Depends(verify_credentials)):
+async def get_network_equipment():
     try:
         devices = await glpi_service.get_network_equipments()
         return {"data": devices, "total": len(devices)}
@@ -429,7 +412,7 @@ async def get_network_equipment(username: str = Depends(verify_credentials)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @glpi_router.get("/phones")
-async def get_phones(username: str = Depends(verify_credentials)):
+async def get_phones():
     try:
         phones = await glpi_service.get_phones()
         return {"data": phones, "total": len(phones)}
