@@ -165,7 +165,42 @@ export default function AgentConfig() {
                     </Badge>
                   </div>
                 </a>
-
+{/* Script d'installation automatique */}
+<div
+  onClick={async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/glpi/agent-install-script`);
+      const data = await response.json();
+      const blob = new Blob([data.script], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = data.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("Script téléchargé !");
+    } catch (err) {
+      toast.error("Erreur lors du téléchargement");
+    }
+  }}
+  className="block cursor-pointer"
+  data-testid="download-script"
+>
+  <div className="flex items-center justify-between p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/50 transition-colors">
+    <div className="flex items-center gap-3">
+      <FileText className="h-8 w-8 text-emerald-500" />
+      <div>
+        <p className="text-zinc-100 font-medium">Installation Automatique</p>
+        <p className="text-xs text-zinc-500">Script .bat préconfigurée - Exécuter en admin</p>
+      </div>
+    </div>
+    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+      BAT
+    </Badge>
+  </div>
+</div>
                 {/* Instructions */}
                 <div className="mt-6 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20">
                   <h4 className="text-sm font-bold text-amber-500 mb-3 flex items-center gap-2">
